@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=YourStrong@Passw0rd
@@ -9,6 +9,23 @@ services:
       - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
+
+  backend:
+    build: ./InventoryManagementAPI
+    ports:
+      - "5000:80"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=InventoryManagement;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+
+  frontend:
+    build: ./inventory-management-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
 
 volumes:
   sqlserver_data:
