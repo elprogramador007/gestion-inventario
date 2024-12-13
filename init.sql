@@ -1,0 +1,20 @@
+CREATE DATABASE InventoryManagement;
+GO
+
+USE InventoryManagement;
+GO
+
+CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Username NVARCHAR(50) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Products (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(500),
+    Quantity INT NOT NULL,
+    Price DECIMAL(18,2) NOT NULL
+);
