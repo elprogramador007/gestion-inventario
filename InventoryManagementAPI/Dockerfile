@@ -11,4 +11,9 @@ RUN dotnet publish "InventoryManagementAPI.csproj" -c Release -o /app/publish /p
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Add these environment variables
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:80
+
 ENTRYPOINT ["dotnet", "InventoryManagementAPI.dll"]
