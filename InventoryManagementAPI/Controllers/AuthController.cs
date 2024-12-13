@@ -6,7 +6,6 @@ using System.Security.Claims;
 using System.Text;
 using InventoryManagementAPI.Data;
 using InventoryManagementAPI.Models;
-using BCrypt.Net;
 
 namespace InventoryManagementAPI.Controllers
 {
@@ -29,7 +28,7 @@ namespace InventoryManagementAPI.Controllers
             var user = new User
             {
                 Username = userDto.Username,
-                PasswordHash = BCrypt.HashPassword(userDto.Password),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
                 Role = userDto.Role
             };
 
@@ -44,7 +43,7 @@ namespace InventoryManagementAPI.Controllers
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == userDto.Username);
 
-            if (user == null || !BCrypt.Verify(userDto.Password, user.PasswordHash))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(userDto.Password, user.PasswordHash))
                 return Unauthorized();
 
             var token = GenerateJwtToken(user);
@@ -54,7 +53,7 @@ namespace InventoryManagementAPI.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is null")));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -77,8 +76,8 @@ namespace InventoryManagementAPI.Controllers
 
     public class UserDto
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }
