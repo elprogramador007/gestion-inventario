@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using InventoryManagementAPI.Data;
+using InventoryManagementAPI.Models;
 
+// ... rest of your Program.cs code
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
